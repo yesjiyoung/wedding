@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta property="og:title" content="OO & OO 결혼합니다" />
+  <meta property="og:description" content="날짜 · 시간 · 장소" />
+  <meta property="og:image" content="https://picsum.photos/1200/630" />
+  <title>모바일 청첩장</title>
+
+  <style>
+    :root{
+      --bg:#fbfaf8;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent:#111827;
+      --radius:18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --max: 520px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg, #fff, var(--bg));
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px 16px 40px;}
+    .hero{
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      background:#000;
+      position:relative;
+      min-height: 520px;
+    }
+    .hero img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      opacity:.92;
+    }
+    .hero .overlay{
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.50) 65%, rgba(0,0,0,.65) 100%);
+    }
+    .hero .title{
+      position:absolute; left:18px; right:18px; bottom:18px;
+      color:#fff;
+    }
+    .kicker{letter-spacing:.18em; font-size:12px; opacity:.9}
+    h1{margin:10px 0 6px; font-size:28px; line-height:1.2}
+    .meta{font-size:14px; opacity:.95}
+    .chip{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      background:rgba(255,255,255,.14);
+      backdrop-filter: blur(8px);
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.18);
+      font-size:13px;
+    }
+    .section{margin-top:16px;}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow: 0 6px 20px rgba(0,0,0,.04);
+      padding:16px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:16px;
+      letter-spacing:-.02em;
+    }
+    .desc{color:var(--muted); font-size:14px; line-height:1.7}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      width:100%;
+      display:flex; align-items:center; justify-content:center;
+      gap:8px;
+      border-radius:14px;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn.primary{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+    .btn:active{transform:translateY(1px)}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .divider{height:1px; background:var(--line); margin:14px 0}
+    .small{font-size:12px; color:var(--muted)}
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:8px;
+    }
+    .gallery img{
+      width:100%; aspect-ratio:1/1;
+      object-fit:cover;
+      border-radius:14px;
+      border:1px solid var(--line);
+      cursor:pointer;
+    }
+    dialog{
+      border:none; padding:0; border-radius:18px; overflow:hidden;
+      width:min(92vw, 520px);
+      box-shadow: var(--shadow);
+    }
+    dialog::backdrop{background:rgba(0,0,0,.6)}
+    .modalimg{width:100%; height:auto; display:block}
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%);
+      background:rgba(17,24,39,.92);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease;
+    }
+    .toast.show{opacity:1}
+    footer{margin-top:18px; text-align:center; color:var(--muted); font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero" aria-label="대표 이미지">
+      <img id="heroImg" src="https://picsum.photos/900/1200?random=4" alt="웨딩 사진" />
+      <div class="overlay"></div>
+      <div class="title">
+        <div class="kicker">WEDDING INVITATION</div>
+        <h1><span id="groomName">신랑</span> · <span id="brideName">신부</span></h1>
+        <div class="meta">
+          <span id="dateText">2026년 05월 16일 (토)</span> ·
+          <span id="timeText">오후 1시 30분</span><br/>
+          <span id="hallText">OO웨딩홀 3층 OO홀</span>
+        </div>
+        <div class="chip" id="ddayChip">D-</div>
+      </div>
+    </section>
+
+    <!-- 초대글 -->
+    <section class="section">
+      <div class="card">
+        <h2>초대합니다</h2>
+        <p class="desc" id="inviteMsg">
+          저희 두 사람이 사랑으로 한 길을 걷고자 합니다.<br/>
+          소중한 분들을 모시고 감사의 마음을 전하고 싶습니다.<br/>
+          축복의 자리에서 함께해 주세요.
+        </p>
+      </div>
+    </section>
+
+    <!-- 일정/장소 -->
+    <section class="section">
+      <div class="card">
+        <h2>일정 · 장소</h2>
+        <div class="desc">
+          <b id="dateLine">2026-05-16 13:30</b><br/>
+          <span id="addrLine">서울시 OO구 OO로 00, OO웨딩홀</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid2">
+          <button class="btn primary" id="shareBtn">공유하기</button>
+          <button class="btn" id="copyAddrBtn">주소 복사</button>
+          <button class="btn" id="addCalBtn">캘린더 저장</button>
+          <a class="btn" id="mapBtn" target="_blank" rel="noreferrer">지도 열기</a>
+        </div>
+        <div class="small" style="margin-top:10px">
+          * “지도 열기”는 네이버/카카오/구글 중 하나로 연결되도록 바꿀 수 있어요.
+        </div>
+      </div>
+    </section>
+
+    <!-- 갤러리 -->
+    <section class="section">
+      <div class="card">
+        <h2>갤러리</h2>
+        <div class="gallery" id="gallery">
+          <img src="https://picsum.photos/400/400?random=10" alt="gallery 1">
+          <img src="https://picsum.photos/400/400?random=11" alt="gallery 2">
+          <img src="https://picsum.photos/400/400?random=12" alt="gallery 3">
+          <img src="https://picsum.photos/400/400?random=13" alt="gallery 4">
+          <img src="https://picsum.photos/400/400?random=14" alt="gallery 5">
+          <img src="https://picsum.photos/400/400?random=15" alt="gallery 6">
+        </div>
+        <dialog id="imgModal">
+          <img class="modalimg" id="modalImg" alt="확대 이미지">
+        </dialog>
+        <div class="small" style="margin-top:10px">사진을 누르면 크게 볼 수 있어요.</div>
+      </div>
+    </section>
+
+    <!-- 연락처 -->
+    <section class="section">
+      <div class="card">
+        <h2>연락처</h2>
+        <div class="desc">
+          신랑: <span id="groomPhoneText">010-0000-0000</span><br/>
+          신부: <span id="bridePhoneText">010-0000-0000</span>
+        </div>
+        <div class="divider"></div>
+        <div class="grid2">
+          <a class="btn" id="callGroom" href="tel:01000000000">신랑에게 전화</a>
+          <a class="btn" id="callBride" href="tel:01000000000">신부에게 전화</a>
+          <a class="btn" id="smsGroom" href="sms:01000000000">신랑에게 문자</a>
+          <a class="btn" id="smsBride" href="sms:01000000000">신부에게 문자</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 마음 전하실 곳 -->
+    <section class="section">
+      <div class="card">
+        <h2>마음 전하실 곳</h2>
+        <div class="desc">계좌번호를 누르면 복사됩니다.</div>
+        <div class="divider"></div>
+
+        <button class="btn" data-copy="신랑측: OO은행 123-456-789012 (예금주: OOO)">
+          신랑측 · OO은행 123-456-789012
+        </button>
+        <button class="btn" data-copy="신부측: OO은행 987-654-321000 (예금주: OOO)">
+          신부측 · OO은행 987-654-321000
+        </button>
+
+        <div class="small" style="margin-top:10px">
+          * 카카오페이 송금 링크/토스 송금 링크도 붙일 수 있어요.
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Wedding Invitation
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">복사했어요</div>
+
+  <script>
+    // ====== 여기만 바꾸면 됩니다 ======
+    const CONFIG = {
+      groomName: "신랑이름",
+      brideName: "신부이름",
+      weddingISO: "2026-05-16T13:30:00+09:00", // KST
+      hallText: "OO웨딩홀 3층 OO홀",
+      addressText: "서울시 OO구 OO로 00, OO웨딩홀",
+      groomPhone: "01012345678",
+      bridePhone: "01087654321",
+      // 지도: 네이버/카카오/구글 중 택1로 바꿔 쓰세요
+      mapUrl: "https://map.naver.com/v5/search/OO웨딩홀"
+    };
+
+    // ====== 유틸 ======
+    const $ = (id) => document.getElementById(id);
+    const toast = $("toast");
+    function showToast(msg="복사했어요"){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1400);
+    }
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("복사했어요");
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        showToast("복사했어요");
+      }
+    }
+
+    // ====== 초기 렌더 ======
+    function formatKoreanDate(iso){
+      const d = new Date(iso);
+      const weekdays = ["일","월","화","수","목","금","토"];
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      const w = weekdays[d.getDay()];
+      let hh = d.getHours();
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      const ampm = hh < 12 ? "오전" : "오후";
+      hh = hh % 12; if(hh === 0) hh = 12;
+      return {
+        dateText: `${y}년 ${m}월 ${day}일 (${w})`,
+        timeText: `${ampm} ${hh}시 ${mm}분`,
+        line: `${y}-${m}-${day} ${String(d.getHours()).padStart(2,"0")}:${mm}`
+      };
+    }
+
+    function calcDday(iso){
+      const now = new Date();
+      const target = new Date(iso);
+      const diff = target.getTime() - now.getTime();
+      const days = Math.ceil(diff / (1000*60*60*24));
+      if(days > 0) return `D-${days}`;
+      if(days === 0) return "D-DAY";
+      return `D+${Math.abs(days)}`;
+    }
+
+    function setContacts(){
+      $("groomName").textContent = CONFIG.groomName;
+      $("brideName").textContent = CONFIG.brideName;
+      $("hallText").textContent = CONFIG.hallText;
+      $("addrLine").textContent = CONFIG.addressText;
+
+      const f = formatKoreanDate(CONFIG.weddingISO);
+      $("dateText").textContent = f.dateText;
+      $("timeText").textContent = f.timeText;
+      $("dateLine").textContent = f.line;
+      $("ddayChip").textContent = calcDday(CONFIG.weddingISO);
+
+      $("groomPhoneText").textContent = formatPhone(CONFIG.groomPhone);
+      $("bridePhoneText").textContent = formatPhone(CONFIG.bridePhone);
+
+      $("callGroom").href = `tel:${CONFIG.groomPhone}`;
+      $("callBride").href = `tel:${CONFIG.bridePhone}`;
+      $("smsGroom").href = `sms:${CONFIG.groomPhone}`;
+      $("smsBride").href = `sms:${CONFIG.bridePhone}`;
+
+      $("mapBtn").href = CONFIG.mapUrl;
+      $("year").textContent = String(new Date().getFullYear());
+    }
+
+    function formatPhone(p){
+      // 01012345678 -> 010-1234-5678
+      const s = String(p).replace(/[^0-9]/g,"");
+      if(s.length === 11) return `${s.slice(0,3)}-${s.slice(3,7)}-${s.slice(7)}`;
+      if(s.length === 10) return `${s.slice(0,3)}-${s.slice(3,6)}-${s.slice(6)}`;
+      return p;
+    }
+
+    // ====== 버튼 이벤트 ======
+    $("copyAddrBtn").addEventListener("click", ()=> copyText(CONFIG.addressText));
+    $("shareBtn").addEventListener("click", async ()=>{
+      const shareData = {
+        title: `${CONFIG.groomName} · ${CONFIG.brideName} 결혼합니다`,
+        text: `${formatKoreanDate(CONFIG.weddingISO).dateText} ${formatKoreanDate(CONFIG.weddingISO).timeText}\n${CONFIG.hallText}\n${CONFIG.addressText}`,
+        url: location.href
+      };
+      if(navigator.share){
+        try { await navigator.share(shareData); }
+        catch(e){ /* 사용자가 취소 */ }
+      } else {
+        await copyText(location.href);
+        showToast("링크를 복사했어요");
+      }
+    });
+
+    // iCalendar(.ics) 생성 후 다운로드
+    $("addCalBtn").addEventListener("click", ()=>{
+      const d = new Date(CONFIG.weddingISO);
+      function toICSDate(dt){
+        // UTC로 변환
+        const z = new Date(dt.getTime() - dt.getTimezoneOffset()*60000);
+        const y = z.getUTCFullYear();
+        const m = String(z.getUTCMonth()+1).padStart(2,"0");
+        const day = String(z.getUTCDate()).padStart(2,"0");
+        const hh = String(z.getUTCHours()).padStart(2,"0");
+        const mm = String(z.getUTCMinutes()).padStart(2,"0");
+        const ss = "00";
+        return `${y}${m}${day}T${hh}${mm}${ss}Z`;
+      }
+      const start = toICSDate(d);
+      const end = toICSDate(new Date(d.getTime() + 2*60*60*1000)); // 2시간
+      const uid = `${Date.now()}@wedding-invite`;
+      const ics = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Wedding Invite//KR//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        `UID:${uid}`,
+        `DTSTAMP:${toICSDate(new Date())}`,
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:${CONFIG.groomName} & ${CONFIG.brideName} Wedding`,
+        `LOCATION:${CONFIG.addressText}`,
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\\r\\n");
+
+      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "wedding-invitation.ics";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("캘린더 파일을 저장했어요");
+    });
+
+    // 갤러리 모달
+    const modal = $("imgModal");
+    const modalImg = $("modalImg");
+    $("gallery").addEventListener("click", (e)=>{
+      const img = e.target.closest("img");
+      if(!img) return;
+      modalImg.src = img.src.replace("/400/400","/900/900");
+      modal.showModal();
+    });
+    modal.addEventListener("click", ()=> modal.close());
+
+    // 계좌 버튼 복사
+    document.querySelectorAll("[data-copy]").forEach(btn=>{
+      btn.addEventListener("click", ()=> copyText(btn.getAttribute("data-copy")));
+    });
+
+    // init
+    setContacts();
+    setInterval(()=> $("ddayChip").textContent = calcDday(CONFIG.weddingISO), 60*1000);
+  </script>
+</body>
+</html>
