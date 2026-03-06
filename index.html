@@ -438,7 +438,7 @@
     
         <div class="hero-photo">
           <!-- <img id="heroImg" src="./assets/N_251121_김강한_노지영_1905+1.jpg" alt="웨딩 대표 사진"  fetchpriority="high" decoding="async" /> -->
-          <img id="heroImg" src="./assets/N_251121_김강한_노지영_0183+1.jpg" alt="웨딩 대표 사진"  fetchpriority="high" decoding="async" />
+          <img id="heroImg" src="./assets/N_251121_김강한_노지영_0183+1.png" alt="웨딩 대표 사진"  fetchpriority="high" decoding="async" />
         </div>
     
         <div class="hero-text">
@@ -534,7 +534,7 @@
             <div class="timeline-content">
               <div class="timeline-year">2024</div>
               <p class="timeline-text">강한이의 진심 어린 프로포즈로, 연인이었던 우리가 평생을 약속한 해.</p>
-              <img src="./history/2024.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2024 우리 사진">
+              <img src="./history/2024.JPG" class="timeline-photo" loading="lazy" decoding="async" alt="2024 우리 사진">
             </div>
           </div>
           <div class="timeline-item">
@@ -548,7 +548,7 @@
             <div class="timeline-content">
               <div class="timeline-year">2026</div>
               <p class="timeline-text">오랜 연인이었던 우리가, 이제 한 가정을 이루어 새로운 계절을 맞이하는 오늘.</p>
-              <img src="./history/2026.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2026 우리 사진">
+              <img src="./history/2026.png" class="timeline-photo" loading="lazy" decoding="async" alt="2026 우리 사진">
             </div>
           </div>
         </div>
@@ -584,15 +584,15 @@
         <h2> 갤러리</h2>
         <div class="gallery" id="gallery">
           <!-- 썸네일은 9장만 보여주고, 모달에서는 전체 사진을 넘길 수 있도록 구성 -->
-          <img src="./assets/N_251121_김강한_노지영_0145+1.jpg" data-index="0" loading="lazy" decoding="async" alt="gallery 1">
-          <img src="./assets/N_251121_김강한_노지영_0175+1.jpg" data-index="1" loading="lazy" decoding="async" alt="gallery 2">
-          <img src="./assets/N_251121_김강한_노지영_0183+1.jpg" data-index="2" loading="lazy" decoding="async" alt="gallery 3">
-          <img src="./assets/N_251121_김강한_노지영_0523+1.jpg" data-index="3" loading="lazy" decoding="async" alt="gallery 4">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8140+1.jpg" data-index="4" loading="lazy" decoding="async" alt="gallery 5">
-          <img src="./assets/N_251121_김강한_노지영_0733+1.jpg" data-index="5" loading="lazy" decoding="async" alt="gallery 6">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8215+1.jpg" data-index="6" loading="lazy" decoding="async" alt="gallery 7">
-          <img src="./assets/N_251121_김강한_노지영_0812+1.jpg" data-index="7" loading="lazy" decoding="async" alt="gallery 8">
-          <img src="./assets/N_251121_김강한_노지영_1066+1.jpg" data-index="8" loading="lazy" decoding="async" alt="gallery 9">
+          <img src="./assets/N_251121_김강한_노지영_0175+1.png" data-index="0" loading="lazy" decoding="async" alt="gallery 1">
+          <img src="./assets/N_251121_김강한_노지영_0183+1.png" data-index="1" loading="lazy" decoding="async" alt="gallery 2">
+          <img src="./assets/N_251121_김강한_노지영_2745+1.png" data-index="2" loading="lazy" decoding="async" alt="gallery 3">
+          <img src="./assets/N_251121_김강한_노지영_1618+1.png" data-index="3" loading="lazy" decoding="async" alt="gallery 4">
+          <img src="./assets/N_251121_김강한_노지영_1885+1.png" data-index="4" loading="lazy" decoding="async" alt="gallery 5">
+          <img src="./assets/N_251121_김강한_노지영_1905+1.png" data-index="5" loading="lazy" decoding="async" alt="gallery 6">
+          <img src="./assets/N_251121_김강한_노지영_1600+1.png" data-index="6" loading="lazy" decoding="async" alt="gallery 7">
+          <img src="./assets/N_251121_김강한_노지영_2246+1.png" data-index="7" loading="lazy" decoding="async" alt="gallery 8">
+          <img src="./assets/N_251121_김강한_노지영_3625+1.png" data-index="8" loading="lazy" decoding="async" alt="gallery 9">
         </div>
         <button class="btn" id="openAllPhotosBtn" style="margin-top:10px">사진 더 보기</button>
         
@@ -834,30 +834,35 @@
 
     // 모달에서 돌릴 전체 사진 목록 (썸네일로 보이는 9장 + 숨겨진 사진들)
     const ALL_IMAGES = [
-      "./assets/N_251121_김강한_노지영_0145+1.jpg",
-      "./assets/N_251121_김강한_노지영_0175+1.jpg",
-      "./assets/N_251121_김강한_노지영_0183+1.jpg",
-      "./assets/N_251121_김강한_노지영_0523+1.jpg",
-      "./assets/N_251121_김강한_노지영_JAY_8140+1.jpg",
-      "./assets/N_251121_김강한_노지영_0733+1.jpg",
-      "./assets/N_251121_김강한_노지영_JAY_8215+1.jpg",
-      "./assets/N_251121_김강한_노지영_0812+1.jpg",
-      "./assets/N_251121_김강한_노지영_1066+1.jpg",
-      "./assets/N_251121_김강한_노지영_JAY_8361+1.jpg",
-      "./assets/N_251121_김강한_노지영_JAY_8345+1.jpg",
-      "./assets/N_251121_김강한_노지영_1564+2.jpg",
-      "./assets/N_251121_김강한_노지영_1600+1.jpg",
-      "./assets/N_251121_김강한_노지영_1618+1.jpg",
-      "./assets/N_251121_김강한_노지영_1885+1.jpg",
-      "./assets/N_251121_김강한_노지영_1905+1.jpg",
-      "./assets/N_251121_김강한_노지영_2246+1.jpg",
-      "./assets/N_251121_김강한_노지영_2288+1.jpg",
-      "./assets/N_251121_김강한_노지영_2745+1.jpg",
-      "./assets/N_251121_김강한_노지영_2984+1.jpg",
-      "./assets/N_251121_김강한_노지영_3625+1.jpg",
-      "./assets/N_251121_김강한_노지영_3657+1.jpg",
-      "./assets/N_251121_김강한_노지영_3695+1.jpg",
-      "./assets/N_251121_김강한_노지영_JAY_8959+1.jpg"
+    "./assets/N_251121_김강한_노지영_0175+1.png",
+    "./assets/N_251121_김강한_노지영_0183+1.png",
+    "./assets/N_251121_김강한_노지영_2745+1.png",
+    "./assets/N_251121_김강한_노지영_1618+1.png",
+    "./assets/N_251121_김강한_노지영_1885+1.png",
+    "./assets/N_251121_김강한_노지영_1905+1.png",
+    "./assets/N_251121_김강한_노지영_1600+1.png",
+    "./assets/N_251121_김강한_노지영_2246+1.png",
+    "./assets/N_251121_김강한_노지영_3625+1.png",
+
+    "./assets/N_251121_김강한_노지영_0145+1.png",
+    "./assets/N_251121_김강한_노지영_0733+1.png",
+    "./assets/N_251121_김강한_노지영_1564+2.png",
+    "./assets/N_251121_김강한_노지영_2288+1.png",
+    "./assets/N_251121_김강한_노지영_2419+2.png",
+    "./assets/N_251121_김강한_노지영_2984+1.png",
+    "./assets/N_251121_김강한_노지영_3657+1.png",
+    "./assets/N_251121_김강한_노지영_3695+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8004+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8215+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8345+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8361+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8532+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8603+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8873+1.png",
+    "./assets/N_251121_김강한_노지영_0812+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8140+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8884+1.png",
+    "./assets/N_251121_김강한_노지영_JAY_8959+1.png"
     ];
 
     let currentIndex = 0;
