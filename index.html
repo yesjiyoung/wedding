@@ -59,7 +59,7 @@
     /* 사진 카드 */
     .hero-photo {
       background: white;
-      padding: 14px;              /* ⭐ 여백 핵심 */
+      padding: 6px;              /* ⭐ 여백 조금 줄임 */
       box-shadow: 0 8px 30px rgba(0,0,0,0.06);
     }
 
@@ -270,6 +270,37 @@
       cursor:pointer;
     }
 
+    /* 우리 이야기 카드 자동 접기 */
+    .story-card{
+      cursor:pointer;
+    }
+    .story-card.collapsed .timeline,
+    .story-card.collapsed .desc,
+    .story-card.collapsed .small{
+      display:none;
+    }
+
+    .story-toggle-help{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      margin-top:10px; text-align:center;
+    }
+    .story-card:not(.collapsed) .story-toggle-help{
+      display:none;
+    }
+
+    /* 스크롤 등장 애니메이션용 초대 카드 */
+    .invite-card{
+      opacity:0;
+      transform:translateY(18px);
+      transition:opacity .55s ease, transform .55s ease;
+    }
+    .invite-card.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
     /* 전체 화면 이미지 보기 오버레이 */
     .modalOverlay{
       position:fixed;
@@ -437,7 +468,7 @@
 
     <!-- 초대글 -->
     <section class="section">
-      <div class="card">
+      <div class="card invite-card">
         <h2>초대합니다</h2>
         <p class="desc" id="inviteMsg">
           저희 두 사람이 사랑으로 한 길을 걷고자 합니다.<br/>
@@ -449,8 +480,9 @@
 
     <!-- 우리 이야기 타임라인 -->
     <section class="section">
-      <div class="card">
+      <div class="card story-card">
         <h2>우리 이야기</h2>
+        <div class="story-toggle-help">클릭하여 다시 보기</div>
         <p class="desc">
           2018년부터 지금까지,<br/>
           우리가 함께 걸어온 시간을 한 장 한 장 담았어요.
@@ -915,9 +947,9 @@
     }, {passive:true});
 
 
-    // 타임라인 스크롤 등장 애니메이션
-    const timelineItems = document.querySelectorAll(".timeline-item");
-    if(timelineItems.length){
+    // 타임라인 + 초대글 카드 스크롤 등장 애니메이션
+    const fadeEls = document.querySelectorAll(".timeline-item, .invite-card");
+    if(fadeEls.length){
       if("IntersectionObserver" in window){
         const io = new IntersectionObserver((entries)=>{
           entries.forEach(entry=>{
@@ -927,11 +959,37 @@
             }
           });
         }, {threshold:0.2});
-        timelineItems.forEach(item=>io.observe(item));
+        fadeEls.forEach(el=>io.observe(el));
       }else{
         // 오래된 브라우저에서는 그냥 다 보이게
-        timelineItems.forEach(item=>item.classList.add("visible"));
+        fadeEls.forEach(el=>el.classList.add("visible"));
       }
+    }
+
+    // 우리 이야기 섹션: 다 보고 화면에서 사라지면 자동 접기
+    const storyCard = document.querySelector(".story-card");
+    const storySection = storyCard ? storyCard.closest("section") : null;
+    if(storySection && "IntersectionObserver" in window){
+      let storyCollapsed = false;
+      const storyObserver = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(!entry.isIntersecting){
+            const rect = entry.boundingClientRect;
+            // 섹션 전체가 화면 위로 완전히 사라진 경우만 접기
+            if(rect.bottom < 0 && !storyCollapsed){
+              storyCard.classList.add("collapsed");
+              storyCollapsed = true;
+            }
+          }
+        });
+      }, {threshold:0});
+      storyObserver.observe(storySection);
+
+      // 카드를 탭하면 다시 펼치기/접기
+      storyCard.addEventListener("click", ()=>{
+        storyCollapsed = !storyCollapsed;
+        storyCard.classList.toggle("collapsed", storyCollapsed);
+      });
     }
 
 
