@@ -47,7 +47,7 @@
         radial-gradient(rgba(0,0,0,.02) 1px, transparent 1px);
       background-size: 4px 4px;
       padding: 32px 20px 20px;
-      font-family: 'Jeju Myeongjo', serif;
+            font-family: 'Jeju Myeongjo', serif;
     }
 
 
@@ -171,6 +171,92 @@
     .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
     .divider{height:1px; background:var(--line); margin:14px 0}
     .small{font-size:12px; color:var(--muted)}
+
+    /* 우리 이야기 타임라인 (중앙 라인 + 좌우 번갈아) */
+    .timeline{
+      position:relative;
+      margin-top:16px;
+      padding:10px 0 6px;
+    }
+    .timeline::before{
+      content:"";
+      position:absolute;
+      top:0;
+      bottom:0;
+      left:50%;
+      width:1px;
+      background:var(--line);
+    }
+    .timeline-item{
+      position:relative;
+      width:100%;
+      display:flex;
+      margin:10px 0;
+      opacity:0;
+      transform:translateY(18px);
+      transition:opacity .55s ease, transform .55s ease;
+    }
+    .timeline-item.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .timeline-item::before{
+      content:"";
+      position:absolute;
+      top:14px;
+      left:50%;
+      width:10px;
+      height:10px;
+      margin-left:-5px;
+      border-radius:50%;
+      background:#fff;
+      border:2px solid var(--accent);
+      box-sizing:border-box;
+    }
+    .timeline-content{
+      position:relative;
+      max-width:46%;
+      padding:8px 10px;
+      border-radius:12px;
+      background:#fff;
+      box-shadow:0 4px 14px rgba(0,0,0,.04);
+      border:1px solid var(--line);
+    }
+    /* 홀수: 왼쪽, 짝수: 오른쪽 */
+    .timeline-item:nth-child(odd){
+      justify-content:flex-start;
+    }
+    .timeline-item:nth-child(odd) .timeline-content{
+      margin-right:auto;
+      text-align:left;
+    }
+    .timeline-item:nth-child(even){
+      justify-content:flex-end;
+    }
+    .timeline-item:nth-child(even) .timeline-content{
+      margin-left:auto;
+      text-align:right;
+    }
+    .timeline-year{
+      font-weight:600;
+      font-size:13px;
+      letter-spacing:.08em;
+      color:#111827;
+      margin-bottom:4px;
+    }
+    .timeline-text{
+      margin:0 0 6px;
+      font-size:12px;
+      line-height:1.7;
+      color:var(--muted);
+    }
+    .timeline-photo{
+      width:100%;
+      max-height:120px; /* 사진을 조금 작게 */
+      object-fit:cover;
+      border-radius:10px;
+      border:1px solid var(--line);
+    }
     .gallery{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
@@ -183,12 +269,20 @@
       border:1px solid var(--line);
       cursor:pointer;
     }
-    dialog{
-      border:none; padding:0; border-radius:18px; overflow:hidden;
-      width:min(92vw, 520px);
-      box-shadow: var(--shadow);
+
+    /* 전체 화면 이미지 보기 오버레이 */
+    .modalOverlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.92);
+      z-index:999;
+      display:none; /* 기본은 안 보이게 */
+      align-items:center;
+      justify-content:center;
     }
-    dialog::backdrop{background:rgba(0,0,0,.6)}
+    .modalOverlay.open{
+      display:flex; /* open 클래스가 붙었을 때만 전체 화면으로 표시 */
+    }
     .modalimg{width:100%; height:auto; display:block}
     .toast{
       position:fixed;
@@ -211,7 +305,7 @@
       position:relative;
       background:#000;
       width:100%;
-      aspect-ratio: 3/4; /* 세로 사진 기준, 필요하면 1/1 또는 auto로 */
+      height:100%;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -353,6 +447,82 @@
       </div>
     </section>
 
+    <!-- 우리 이야기 타임라인 -->
+    <section class="section">
+      <div class="card">
+        <h2>우리 이야기</h2>
+        <p class="desc">
+          2018년부터 지금까지,<br/>
+          우리가 함께 걸어온 시간을 한 장 한 장 담았어요.
+        </p>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2018</div>
+              <p class="timeline-text">따뜻한 햇살 가득한 캠퍼스에서, 설레는 마음으로 서로를 알아가기 시작한 해.</p>
+              <img src="./history/2018.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2018 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2019</div>
+              <p class="timeline-text">강한이의 첫 사회생활을 함께 응원하며, 서로의 어른스러움을 배워 간 해.</p>
+              <img src="./history/2019.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2019 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2020</div>
+              <p class="timeline-text">벚꽃이 흐드러진 학교에서, 해마다 같은 자리에서 사진을 남기자고 약속하던 봄.</p>
+              <img src="./history/2020.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2020 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2021</div>
+              <p class="timeline-text">스포츠 경기와 공연을 함께 즐기며, 서로의 취향을 나누고 추억을 차곡차곡 쌓아 간 시간.</p>
+              <img src="./history/2021.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2021 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2022</div>
+              <p class="timeline-text">시간이 흘러 지영이도 졸업하고, 둘 다 사회인이 되어 한층 더 단단해진 우리.</p>
+              <img src="./history/2022.JPG" class="timeline-photo" loading="lazy" decoding="async" alt="2022 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2023</div>
+              <p class="timeline-text">가까운 곳, 먼 곳으로 여행을 다니며, 우리만의 풍경과 이야기를 많이 남긴 해.</p>
+              <img src="./history/2023.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2023 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2024</div>
+              <p class="timeline-text">강한이의 진심 어린 프로포즈로, 연인이었던 우리가 평생을 약속한 해.</p>
+              <img src="./history/2024.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2024 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2025</div>
+              <p class="timeline-text">결혼을 함께 준비하며, 서로의 가족과 하나가 되는 해.</p>
+              <img src="./history/2025.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2025 우리 사진">
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-year">2026</div>
+              <p class="timeline-text">오랜 연인이었던 우리가, 이제 한 가정을 이루어 새로운 계절을 맞이하는 오늘.</p>
+              <img src="./history/2026.jpg" class="timeline-photo" loading="lazy" decoding="async" alt="2026 우리 사진">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 일정/장소 -->
     <section class="section">
       <div class="card">
@@ -379,47 +549,22 @@
     <!-- 갤러리 -->
     <section class="section">
       <div class="card">
-        <h2>갤러리</h2>
+        <h2> 갤러리</h2>
         <div class="gallery" id="gallery">
-          <img src="./assets/N_251121_김강한_노지영_0145+1.jpg" loading="lazy" decoding="async" alt="gallery 1">
-          <img src="./assets/N_251121_김강한_노지영_0175+1.jpg" loading="lazy" decoding="async" alt="gallery 2">
-          <img src="./assets/N_251121_김강한_노지영_0183+1.jpg" loading="lazy" decoding="async" alt="gallery 3">
-          <img src="./assets/N_251121_김강한_노지영_0523+1.jpg" loading="lazy" decoding="async" alt="gallery 4">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8140+1.jpg" loading="lazy" decoding="async" alt="gallery 27">
-          <img src="./assets/N_251121_김강한_노지영_0733+1.jpg" loading="lazy" decoding="async" alt="gallery 5">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8215+1.jpg" loading="lazy" decoding="async" alt="gallery 28">
-          <img src="./assets/N_251121_김강한_노지영_0812+1.jpg" loading="lazy" decoding="async" alt="gallery 6">
-          <!-- <img src="./assets/N_251121_김강한_노지영_0960+1.jpg" loading="lazy" decoding="async" alt="gallery 7"> -->
-          <img src="./assets/N_251121_김강한_노지영_1066+1.jpg" loading="lazy" decoding="async" alt="gallery 8">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8361+1.jpg" loading="lazy" decoding="async" alt="gallery 30">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8345+1.jpg" loading="lazy" decoding="async" alt="gallery 29">
-          <img src="./assets/N_251121_김강한_노지영_1564+1.jpg" loading="lazy" decoding="async" alt="gallery 9">
-          <img src="./assets/N_251121_김강한_노지영_1600+1.jpg" loading="lazy" decoding="async" alt="gallery 10">
-          <img src="./assets/N_251121_김강한_노지영_1618+1.jpg" loading="lazy" decoding="async" alt="gallery 11">
-          <img src="./assets/N_251121_김강한_노지영_1885+1.jpg" loading="lazy" decoding="async" alt="gallery 12">
-          <img src="./assets/N_251121_김강한_노지영_1905+1.jpg" loading="lazy" decoding="async" alt="gallery 13">
-          <img src="./assets/N_251121_김강한_노지영_2246+1.jpg" loading="lazy" decoding="async" alt="gallery 14">
-          <!-- <img src="./assets/N_251121_김강한_노지영_2282+1.jpg" loading="lazy" decoding="async" alt="gallery 15"> -->
-          <img src="./assets/N_251121_김강한_노지영_2288+1.jpg" loading="lazy" decoding="async" alt="gallery 16">
-          <!-- <img src="./assets/N_251121_김강한_노지영_2419+1.jpg" loading="lazy" decoding="async" alt="gallery 17"> -->
-          <img src="./assets/N_251121_김강한_노지영_2745+1.jpg" loading="lazy" decoding="async" alt="gallery 18">
-          <img src="./assets/N_251121_김강한_노지영_2984+1.jpg" loading="lazy" decoding="async" alt="gallery 19">
-          <!-- <img src="./assets/N_251121_김강한_노지영_3532+1.jpg" loading="lazy" decoding="async" alt="gallery 20"> -->
-          <img src="./assets/N_251121_김강한_노지영_3625+1.jpg" loading="lazy" decoding="async" alt="gallery 21">
-          <img src="./assets/N_251121_김강한_노지영_3657+1.jpg" loading="lazy" decoding="async" alt="gallery 22">
-          <img src="./assets/N_251121_김강한_노지영_3695+1.jpg" loading="lazy" decoding="async" alt="gallery 23">
-          <!-- <img src="./assets/N_251121_김강한_노지영_3707+1.jpg" loading="lazy" decoding="async" alt="gallery 24">
-          <img src="./assets/N_251121_김강한_노지영_4047+1.jpg" loading="lazy" decoding="async" alt="gallery 25"> -->
-          <!-- <img src="./assets/N_251121_김강한_노지영_JAY_8004+1.jpg" loading="lazy" decoding="async" alt="gallery 26"> -->
-          <!-- <img src="./assets/N_251121_김강한_노지영_JAY_8532+1.jpg" loading="lazy" decoding="async" alt="gallery 31">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8603+1.jpg" loading="lazy" decoding="async" alt="gallery 32"> -->
-          <!-- <img src="./assets/N_251121_김강한_노지영_JAY_8873+1.jpg" loading="lazy" decoding="async" alt="gallery 33">
-          <img src="./assets/N_251121_김강한_노지영_JAY_8884+1.jpg" loading="lazy" decoding="async" alt="gallery 34"> -->
-          <!-- <img src="./assets/N_251121_김강한_노지영_JAY_8940+1.jpg" loading="lazy" decoding="async" alt="gallery 35"> -->
-          <img src="./assets/N_251121_김강한_노지영_JAY_8959+1.jpg" loading="lazy" decoding="async" alt="gallery 36">
+          <!-- 썸네일은 9장만 보여주고, 모달에서는 전체 사진을 넘길 수 있도록 구성 -->
+          <img src="./assets/N_251121_김강한_노지영_0145+1.jpg" data-index="0" loading="lazy" decoding="async" alt="gallery 1">
+          <img src="./assets/N_251121_김강한_노지영_0175+1.jpg" data-index="1" loading="lazy" decoding="async" alt="gallery 2">
+          <img src="./assets/N_251121_김강한_노지영_0183+1.jpg" data-index="2" loading="lazy" decoding="async" alt="gallery 3">
+          <img src="./assets/N_251121_김강한_노지영_0523+1.jpg" data-index="3" loading="lazy" decoding="async" alt="gallery 4">
+          <img src="./assets/N_251121_김강한_노지영_JAY_8140+1.jpg" data-index="4" loading="lazy" decoding="async" alt="gallery 5">
+          <img src="./assets/N_251121_김강한_노지영_0733+1.jpg" data-index="5" loading="lazy" decoding="async" alt="gallery 6">
+          <img src="./assets/N_251121_김강한_노지영_JAY_8215+1.jpg" data-index="6" loading="lazy" decoding="async" alt="gallery 7">
+          <img src="./assets/N_251121_김강한_노지영_0812+1.jpg" data-index="7" loading="lazy" decoding="async" alt="gallery 8">
+          <img src="./assets/N_251121_김강한_노지영_1066+1.jpg" data-index="8" loading="lazy" decoding="async" alt="gallery 9">
         </div>
+        <button class="btn" id="openAllPhotosBtn" style="margin-top:10px">사진 더 보기</button>
         
-        <dialog id="imgModal">
+        <div id="imgModal" class="modalOverlay">
           <div class="modalWrap">
             <button class="navBtn left" type="button" id="prevBtn" aria-label="이전 사진">‹</button>
         
@@ -432,9 +577,9 @@
         
             <button class="closeBtn" type="button" id="closeBtn" aria-label="닫기">✕</button>
           </div>
-        </dialog>
+        </div>
         
-        <div class="small" style="margin-top:10px">사진을 누르면 크게 볼 수 있어요.</div>
+        <div class="small" style="margin-top:10px; text-align:center;">사진을 누르면 크게 볼 수 있어요.</div>
       </div>
     </section>
 
@@ -652,58 +797,94 @@
     const nextBtn = $("nextBtn");
     const closeBtn = $("closeBtn");
 
-    // 갤러리 이미지 목록 수집
+    // 썸네일 영역
     const galleryEl = $("gallery");
-    let galleryImgs = [];
+
+    // 모달에서 돌릴 전체 사진 목록 (썸네일로 보이는 9장 + 숨겨진 사진들)
+    const ALL_IMAGES = [
+      "./assets/N_251121_김강한_노지영_0145+1.jpg",
+      "./assets/N_251121_김강한_노지영_0175+1.jpg",
+      "./assets/N_251121_김강한_노지영_0183+1.jpg",
+      "./assets/N_251121_김강한_노지영_0523+1.jpg",
+      "./assets/N_251121_김강한_노지영_JAY_8140+1.jpg",
+      "./assets/N_251121_김강한_노지영_0733+1.jpg",
+      "./assets/N_251121_김강한_노지영_JAY_8215+1.jpg",
+      "./assets/N_251121_김강한_노지영_0812+1.jpg",
+      "./assets/N_251121_김강한_노지영_1066+1.jpg",
+      "./assets/N_251121_김강한_노지영_JAY_8361+1.jpg",
+      "./assets/N_251121_김강한_노지영_JAY_8345+1.jpg",
+      "./assets/N_251121_김강한_노지영_1564+1.jpg",
+      "./assets/N_251121_김강한_노지영_1600+1.jpg",
+      "./assets/N_251121_김강한_노지영_1618+1.jpg",
+      "./assets/N_251121_김강한_노지영_1885+1.jpg",
+      "./assets/N_251121_김강한_노지영_1905+1.jpg",
+      "./assets/N_251121_김강한_노지영_2246+1.jpg",
+      "./assets/N_251121_김강한_노지영_2288+1.jpg",
+      "./assets/N_251121_김강한_노지영_2745+1.jpg",
+      "./assets/N_251121_김강한_노지영_2984+1.jpg",
+      "./assets/N_251121_김강한_노지영_3625+1.jpg",
+      "./assets/N_251121_김강한_노지영_3657+1.jpg",
+      "./assets/N_251121_김강한_노지영_3695+1.jpg",
+      "./assets/N_251121_김강한_노지영_JAY_8959+1.jpg"
+    ];
+
     let currentIndex = 0;
 
-    function refreshGalleryList(){
-      galleryImgs = Array.from(galleryEl.querySelectorAll("img"));
+    function isModalOpen(){
+      return modal.classList.contains("open");
     }
 
     function openAt(idx){
-      refreshGalleryList();
-      currentIndex = (idx + galleryImgs.length) % galleryImgs.length;
+      const len = ALL_IMAGES.length;
+      currentIndex = (idx + len) % len;
 
-      const img = galleryImgs[currentIndex];
-      modalImg.src = img.src;
-      modalCaption.textContent = `${currentIndex + 1} / ${galleryImgs.length}`;
+      modalImg.src = ALL_IMAGES[currentIndex];
+      modalCaption.textContent = `${currentIndex + 1} / ${len}`;
 
-      if(!modal.open) modal.showModal();
+      if(!isModalOpen()) modal.classList.add("open");
     }
 
     function go(delta){
       openAt(currentIndex + delta);
     }
 
+    function closeModal(){
+      modal.classList.remove("open");
+    }
+
     prevBtn.addEventListener("click", ()=> go(-1));
     nextBtn.addEventListener("click", ()=> go(1));
-    closeBtn.addEventListener("click", ()=> modal.close());
+    closeBtn.addEventListener("click", ()=> closeModal());
 
-    // 썸네일 클릭 시 해당 인덱스로 오픈
+    // 썸네일 클릭 시 해당 인덱스로 오픈 (data-index 사용)
     galleryEl.addEventListener("click", (e)=>{
       const img = e.target.closest("img");
       if(!img) return;
-      refreshGalleryList();
-      const idx = galleryImgs.indexOf(img);
+      const idx = Number(img.dataset.index || 0);
       openAt(idx);
     });
 
+    // "사진 더 보기" 버튼: 전체 사진 뷰어를 첫 번째 사진부터 열기
+    const openAllPhotosBtn = document.getElementById("openAllPhotosBtn");
+    if(openAllPhotosBtn){
+      openAllPhotosBtn.addEventListener("click", ()=>{
+        openAt(0);
+      });
+    }
+
     // 키보드(PC): 좌/우/ESC
     document.addEventListener("keydown", (e)=>{
-      if(!modal.open) return;
+      if(!isModalOpen()) return;
       if(e.key === "ArrowLeft") go(-1);
       if(e.key === "ArrowRight") go(1);
-      if(e.key === "Escape") modal.close();
+      if(e.key === "Escape") closeModal();
     });
 
-    // 모달 바깥 클릭 닫기 (이미지/버튼 누르면 안 닫히게)
+    // 모달 바깥(검은 배경) 클릭 시 닫기
     modal.addEventListener("click", (e)=>{
-      const rect = modal.getBoundingClientRect();
-      const isInDialog =
-        rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-        rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
-      if(!isInDialog) modal.close();
+      if(e.target === modal){
+        closeModal();
+      }
     });
 
     // 스와이프: 좌/우
@@ -711,14 +892,14 @@
     let startY = null;
 
     modal.addEventListener("touchstart", (e)=>{
-      if(!modal.open) return;
+      if(!isModalOpen()) return;
       const t = e.touches[0];
       startX = t.clientX;
       startY = t.clientY;
     }, {passive:true});
 
     modal.addEventListener("touchend", (e)=>{
-      if(!modal.open || startX === null) return;
+      if(!isModalOpen() || startX === null) return;
       const t = e.changedTouches[0];
       const dx = t.clientX - startX;
       const dy = t.clientY - startY;
@@ -732,6 +913,26 @@
       startX = null;
       startY = null;
     }, {passive:true});
+
+
+    // 타임라인 스크롤 등장 애니메이션
+    const timelineItems = document.querySelectorAll(".timeline-item");
+    if(timelineItems.length){
+      if("IntersectionObserver" in window){
+        const io = new IntersectionObserver((entries)=>{
+          entries.forEach(entry=>{
+            if(entry.isIntersecting){
+              entry.target.classList.add("visible");
+              io.unobserve(entry.target);
+            }
+          });
+        }, {threshold:0.2});
+        timelineItems.forEach(item=>io.observe(item));
+      }else{
+        // 오래된 브라우저에서는 그냥 다 보이게
+        timelineItems.forEach(item=>item.classList.add("visible"));
+      }
+    }
 
 
     // 계좌 버튼 복사
