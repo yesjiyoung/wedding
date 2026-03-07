@@ -220,6 +220,9 @@
       border:2px solid var(--accent);
       box-sizing:border-box;
     }
+    .timeline-item:first-child::before{
+      top:70px;
+    }
     .timeline-content{
       position:relative;
       max-width:46%;
@@ -228,6 +231,10 @@
       background:#fff;
       box-shadow:0 4px 14px rgba(0,0,0,.04);
       border:1px solid var(--line);
+    }
+      /* 바로 다음 카드부터 살짝 위로 겹치게 */
+    .timeline-item + .timeline-item .timeline-content{
+      margin-top:-50px;
     }
     /* 홀수: 왼쪽, 짝수: 오른쪽 */
     .timeline-item:nth-child(odd){
@@ -568,6 +575,7 @@
         <h2>일정 · 장소</h2>
         <div class="desc">
           <b id="">2026년 05월 09일 오후 12시 30분</b><br/>
+          <b id="">뜰안채2한정식</b><br/>
           <span id="addrLine">경기 의왕시 양지편로 39-18</span>
         </div>
 
@@ -578,6 +586,13 @@
           <button class="btn" id="copyAddrBtn">주소 복사</button>
           <a class="btn" id="mapBtn" target="_blank" rel="noreferrer">지도 열기</a>
         </div>
+
+        <div class="divider" style="margin-top:16px; margin-bottom:12px;"></div>
+
+        <img id="locationPhoto"
+             src="./come/come_here.jpg"
+             alt="예식장 안내 사진"
+             style="width:100%; border-radius:14px; border:1px solid var(--line); object-fit:cover; cursor:pointer;">
       </div>
     </section>
 
@@ -648,11 +663,11 @@
             <div class="small" style="text-align:left; margin-bottom:4px; color:var(--accent);">
               신랑측
             </div>
-            <button class="btn" data-copy="신랑측 1: OO은행 000-0000-000000 (예금주: 김강한)">
-              우리은행 388-080-33194 (예금주: 김종환)
+            <button class="btn" data-copy="우리은행 388-080-33194">
+              우리은행 388-080-33194 (김종환)
             </button>
-            <button class="btn" data-copy="신랑측 2: OO은행 000-0000-000000 (예금주: 김강한)">
-              우리은행 1002-384-190200 (예금주: 김강한)
+            <button class="btn" data-copy="우리은행 1002-384-190200">
+              우리은행 1002-384-190200 (김강한)
             </button>
           </div>
 
@@ -662,14 +677,14 @@
             <div class="small" style="text-align:left; margin-bottom:4px; color:var(--accent);">
               신부측
             </div>
-            <button class="btn" data-copy="신부측 1: OO은행 000-0000-000000 (예금주: 노지영)">
-              SC제일은행 609-20-122470 (예금주: 노지영)
+            <button class="btn" data-copy="SC제일은행 609-20-122470">
+              SC제일은행 609-20-122470 (노상래)
             </button>
-            <button class="btn" data-copy="신부측 2: OO은행 000-0000-000000 (예금주: 노지영)">
-              기업은행 010-9168-7379 (예금주: 노지영)
+            <button class="btn" data-copy="기업은행 010-9168-7379">
+              기업은행 010-9168-7379 (명경희)
             </button>
-            <button class="btn" data-copy="신부측 3: OO은행 000-0000-000000 (예금주: 노지영)">
-              카카오뱅크 3333-22-0265137 (예금주: 노지영)
+            <button class="btn" data-copy="카카오뱅크 3333-22-0265137">
+              카카오뱅크 3333-22-0265137 (노지영)
             </button>
           </div>
         </div>
@@ -816,6 +831,7 @@
 
     // 썸네일 영역
     const galleryEl = $("gallery");
+    const locationPhotoEl = $("locationPhoto");
 
     // 모달에서 돌릴 전체 사진 목록 (썸네일로 보이는 9장 + 숨겨진 사진들)
     const ALL_IMAGES = [
@@ -886,6 +902,15 @@
     if(openAllPhotosBtn){
       openAllPhotosBtn.addEventListener("click", ()=>{
         openAt(0);
+      });
+    }
+
+    // 일정/장소 예식장 안내 사진 클릭 시 크게 보기 (갤러리와 같은 모달 재사용)
+    if(locationPhotoEl){
+      locationPhotoEl.addEventListener("click", ()=>{
+        modalImg.src = locationPhotoEl.src;
+        modalCaption.textContent = "";
+        if(!isModalOpen()) modal.classList.add("open");
       });
     }
 
