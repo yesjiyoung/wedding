@@ -21,7 +21,7 @@
       --text:#1f2937;
       --muted:#6b7280;
       --line:#e5e7eb;
-      --accent:#111827;
+      --accent:#36780a;
       --radius:18px;
       --shadow: 0 10px 30px rgba(0,0,0,.06);
       --max: 520px;
@@ -134,6 +134,7 @@
       font-size:16px;
       letter-spacing:-.02em;
       text-align: center;
+      color:var(--accent);
     }
 
     .card .desc {
@@ -167,8 +168,14 @@
       color:#fff;
       border-color:var(--accent);
     }
+    #shareBtn{
+      background:#374151;
+      border-color:#374151;
+      color:#fff;
+    }
     .btn:active{transform:translateY(1px)}
     .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .grid3{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px}
     .divider{height:1px; background:var(--line); margin:14px 0}
     .small{font-size:12px; color:var(--muted)}
 
@@ -176,7 +183,7 @@
     .timeline{
       position:relative;
       margin-top:16px;
-      padding:10px 0 6px;
+      padding:0px 0 6px;
     }
     .timeline::before{
       content:"";
@@ -566,15 +573,11 @@
 
         <div class="divider"></div>
 
-        <div class="grid2">
-          <button class="btn primary" id="shareBtn">공유하기</button>
+        <div class="grid3">
+          <button class="btn" id="shareBtn">공유하기</button>
           <button class="btn" id="copyAddrBtn">주소 복사</button>
-          <button class="btn" id="addCalBtn">캘린더 저장</button>
           <a class="btn" id="mapBtn" target="_blank" rel="noreferrer">지도 열기</a>
         </div>
-        <!-- <div class="small" style="margin-top:10px">
-          * “지도 열기”는 네이버/카카오/구글 중 하나로 연결되도록 바꿀 수 있어요.
-        </div> -->
       </div>
     </section>
 
@@ -640,15 +643,39 @@
         <div class="desc">계좌번호를 누르면 복사됩니다.</div>
         <div class="divider"></div>
 
-        <button class="btn" data-copy="신랑측: OO은행 123-456-789012 (예금주: OOO)">
-          신랑측 · OO은행 123-456-789012
-        </button>
-        <button class="btn" data-copy="신부측: OO은행 987-654-321000 (예금주: OOO)">
-          신부측 · OO은행 987-654-321000
-        </button>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div>
+            <div class="small" style="text-align:left; margin-bottom:4px; color:var(--accent);">
+              신랑측
+            </div>
+            <button class="btn" data-copy="신랑측 1: OO은행 000-0000-000000 (예금주: 김강한)">
+              우리은행 388-080-33194 (예금주: 김종환)
+            </button>
+            <button class="btn" data-copy="신랑측 2: OO은행 000-0000-000000 (예금주: 김강한)">
+              우리은행 1002-384-190200 (예금주: 김강한)
+            </button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <div class="small" style="text-align:left; margin-bottom:4px; color:var(--accent);">
+              신부측
+            </div>
+            <button class="btn" data-copy="신부측 1: OO은행 000-0000-000000 (예금주: 노지영)">
+              SC제일은행 609-20-122470 (예금주: 노지영)
+            </button>
+            <button class="btn" data-copy="신부측 2: OO은행 000-0000-000000 (예금주: 노지영)">
+              기업은행 010-9168-7379 (예금주: 노지영)
+            </button>
+            <button class="btn" data-copy="신부측 3: OO은행 000-0000-000000 (예금주: 노지영)">
+              카카오뱅크 3333-22-0265137 (예금주: 노지영)
+            </button>
+          </div>
+        </div>
 
         <div class="small" style="margin-top:10px">
-          * 카카오페이 송금 링크/토스 송금 링크도 붙일 수 있어요.
+          * 계좌 버튼을 누르면 번호가 복사됩니다.
         </div>
       </div>
     </section>
@@ -776,49 +803,7 @@
       }
     });
 
-    // iCalendar(.ics) 생성 후 다운로드
-    $("addCalBtn").addEventListener("click", ()=>{
-      const d = new Date(CONFIG.weddingISO);
-      function toICSDate(dt){
-        // UTC로 변환
-        const z = new Date(dt.getTime() - dt.getTimezoneOffset()*60000);
-        const y = z.getUTCFullYear();
-        const m = String(z.getUTCMonth()+1).padStart(2,"0");
-        const day = String(z.getUTCDate()).padStart(2,"0");
-        const hh = String(z.getUTCHours()).padStart(2,"0");
-        const mm = String(z.getUTCMinutes()).padStart(2,"0");
-        const ss = "00";
-        return `${y}${m}${day}T${hh}${mm}${ss}Z`;
-      }
-      const start = toICSDate(d);
-      const end = toICSDate(new Date(d.getTime() + 2*60*60*1000)); // 2시간
-      const uid = `${Date.now()}@wedding-invite`;
-      const ics = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//Wedding Invite//KR//EN",
-        "CALSCALE:GREGORIAN",
-        "METHOD:PUBLISH",
-        "BEGIN:VEVENT",
-        `UID:${uid}`,
-        `DTSTAMP:${toICSDate(new Date())}`,
-        `DTSTART:${start}`,
-        `DTEND:${end}`,
-        `SUMMARY:${CONFIG.groomName} & ${CONFIG.brideName} Wedding`,
-        `LOCATION:${CONFIG.addressText}`,
-        "END:VEVENT",
-        "END:VCALENDAR"
-      ].join("\\r\\n");
-
-      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "wedding-invitation.ics";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      showToast("캘린더 파일을 저장했어요");
-    });
+    
 
     // 갤러리 모달
     // ====== 갤러리: 좌/우 넘기기 + 스와이프 ======
