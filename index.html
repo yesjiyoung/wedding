@@ -357,6 +357,10 @@
       align-items:center;
       justify-content:center;
     }
+    /* 일정·장소 안내 사진: 한 장만 보기 (방향 버튼 숨김) */
+    .modalWrap.is-single .navBtn{
+      display:none;
+    }
 
     .modalFigure{
       margin:0;
@@ -383,8 +387,8 @@
       width:44px;
       height:44px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.25);
-      background:rgba(0,0,0,.35);
+      border:none;
+      background:transparent;
       color:#fff;
       font-size:26px;
       line-height:1;
@@ -392,7 +396,14 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      backdrop-filter: blur(6px);
+      text-shadow:0 1px 3px rgba(0,0,0,.45);
+      transition:background .15s ease;
+    }
+    .navBtn:hover{
+      background:rgba(255,255,255,.12);
+    }
+    .navBtn:active{
+      background:rgba(255,255,255,.06);
     }
 
     .navBtn.left{ left:10px; }
@@ -597,6 +608,7 @@
              src="./come/come_here.jpg"
              alt="예식장 안내 사진"
              style="width:100%; border-radius:14px; border:1px solid var(--line); object-fit:cover; cursor:pointer;">
+        <div class="small" style="margin-top:10px; text-align:center;">사진을 누르면 크게 볼 수 있어요.</div>
       </div>
     </section>
 
@@ -770,27 +782,36 @@
     }
 
     function setContacts(){
-      $("groomName").textContent = CONFIG.groomName;
-      $("brideName").textContent = CONFIG.brideName;
-      $("hallText").textContent = CONFIG.hallText;
-      $("addrLine").textContent = CONFIG.addressText;
+      const setText = (id, text) => {
+        const el = $(id);
+        if (el) el.textContent = text;
+      };
+      const setHref = (id, href) => {
+        const el = $(id);
+        if (el) el.href = href;
+      };
+
+      setText("groomName", CONFIG.groomName);
+      setText("brideName", CONFIG.brideName);
+      setText("hallText", CONFIG.hallText);
+      setText("addrLine", CONFIG.addressText);
 
       const f = formatKoreanDate(CONFIG.weddingISO);
-      $("dateText").textContent = f.dateText;
-      $("timeText").textContent = f.timeText;
-      $("dateLine").textContent = f.line;
-      $("ddayChip").textContent = calcDday(CONFIG.weddingISO);
+      setText("dateText", f.dateText);
+      setText("timeText", f.timeText);
+      setText("dateLine", f.line);
+      setText("ddayChip", calcDday(CONFIG.weddingISO));
 
-      $("groomPhoneText").textContent = formatPhone(CONFIG.groomPhone);
-      $("bridePhoneText").textContent = formatPhone(CONFIG.bridePhone);
+      setText("groomPhoneText", formatPhone(CONFIG.groomPhone));
+      setText("bridePhoneText", formatPhone(CONFIG.bridePhone));
 
-      $("callGroom").href = `tel:${CONFIG.groomPhone}`;
-      $("callBride").href = `tel:${CONFIG.bridePhone}`;
-      $("smsGroom").href = `sms:${CONFIG.groomPhone}`;
-      $("smsBride").href = `sms:${CONFIG.bridePhone}`;
+      setHref("callGroom", `tel:${CONFIG.groomPhone}`);
+      setHref("callBride", `tel:${CONFIG.bridePhone}`);
+      setHref("smsGroom", `sms:${CONFIG.groomPhone}`);
+      setHref("smsBride", `sms:${CONFIG.bridePhone}`);
 
-      $("mapBtn").href = CONFIG.mapUrl;
-      $("year").textContent = String(new Date().getFullYear());
+      setHref("mapBtn", CONFIG.mapUrl);
+      setText("year", String(new Date().getFullYear()));
     }
 
     function formatPhone(p){
@@ -823,6 +844,7 @@
     // 갤러리 모달
     // ====== 갤러리: 좌/우 넘기기 + 스와이프 ======
     const modal = $("imgModal");
+    const modalWrap = modal?.querySelector(".modalWrap");
     const modalImg = $("modalImg");
     const modalCaption = $("modalCaption");
     const prevBtn = $("prevBtn");
@@ -853,12 +875,6 @@
     "./assets/gallery_16.png",
     "./assets/gallery_17.png",
     "./assets/gallery_18.png",
-    "./assets/gallery_19.png",
-    "./assets/gallery_20.png",
-    "./assets/gallery_21.png",
-    "./assets/gallery_22.png",
-    "./assets/gallery_23.png",
-    "./assets/gallery_24.png"
     ];
 
     let currentIndex = 0;
@@ -868,6 +884,7 @@
     }
 
     function openAt(idx){
+      modalWrap?.classList.remove("is-single");
       const len = ALL_IMAGES.length;
       currentIndex = (idx + len) % len;
 
@@ -883,6 +900,7 @@
 
     function closeModal(){
       modal.classList.remove("open");
+      modalWrap?.classList.remove("is-single");
     }
 
     prevBtn.addEventListener("click", ()=> go(-1));
@@ -908,6 +926,7 @@
     // 일정/장소 예식장 안내 사진 클릭 시 크게 보기 (갤러리와 같은 모달 재사용)
     if(locationPhotoEl){
       locationPhotoEl.addEventListener("click", ()=>{
+        modalWrap?.classList.add("is-single");
         modalImg.src = locationPhotoEl.src;
         modalCaption.textContent = "";
         if(!isModalOpen()) modal.classList.add("open");
@@ -917,8 +936,9 @@
     // 키보드(PC): 좌/우/ESC
     document.addEventListener("keydown", (e)=>{
       if(!isModalOpen()) return;
-      if(e.key === "ArrowLeft") go(-1);
-      if(e.key === "ArrowRight") go(1);
+      const single = modalWrap?.classList.contains("is-single");
+      if(!single && e.key === "ArrowLeft") go(-1);
+      if(!single && e.key === "ArrowRight") go(1);
       if(e.key === "Escape") closeModal();
     });
 
@@ -947,7 +967,7 @@
       const dy = t.clientY - startY;
 
       // 세로 스크롤로 인한 오작동 방지: 가로 이동이 충분할 때만
-      if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2){
+      if(!modalWrap?.classList.contains("is-single") && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2){
         if(dx < 0) go(1);   // 왼쪽으로 밀면 다음
         else go(-1);        // 오른쪽으로 밀면 이전
       }
@@ -1010,7 +1030,10 @@
 
     // init
     setContacts();
-    setInterval(()=> $("ddayChip").textContent = calcDday(CONFIG.weddingISO), 60*1000);
+    setInterval(()=>{
+      const chip = $("ddayChip");
+      if (chip) chip.textContent = calcDday(CONFIG.weddingISO);
+    }, 60*1000);
   </script>
 </body>
 </html>
