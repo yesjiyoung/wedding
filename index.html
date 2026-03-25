@@ -1005,8 +1005,18 @@
             const rect = entry.boundingClientRect;
             // 섹션 전체가 화면 위로 완전히 사라진 경우만 접기
             if(rect.bottom < 0 && !storyCollapsed){
+              const prevScroll = window.scrollY;
+              const prevHeight = document.documentElement.scrollHeight;
               storyCard.classList.add("collapsed");
               storyCollapsed = true;
+              // 접으면 문서 높이가 줄어들어 scrollY가 그대로면 하단으로 튀는 현상 보정
+              requestAnimationFrame(()=>{
+                const nextHeight = document.documentElement.scrollHeight;
+                const delta = prevHeight - nextHeight;
+                if(delta > 0){
+                  window.scrollTo(0, Math.max(0, prevScroll - delta));
+                }
+              });
             }
           }
         });
