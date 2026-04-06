@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#ffffff" />
   <meta property="og:title" content="김강한 & 노지영 결혼합니다" />
-  <meta property="og:description" content="26.05.09 · 12:30 · 뜰안채2한정식" />
+  <meta property="og:description" content="26.05.09.토 · 오후 12:30 · 뜰안채2한정식" />
   <meta property="og:image" content="https://yesjiyoung.github.io/wedding/top/N_251121_김강한_노지영_1905+1.jpg" />
   <!-- <link href="https://cdn.jsdelivr.net/gh/webfontworld/mapo/MapoFlowerIsland.css" rel="stylesheet"> -->
   <!-- <link href="https://cdn.jsdelivr.net/gh/webfontworld/seoul/SeoulHangang.css" rel="stylesheet">
@@ -98,6 +98,13 @@
       color: #666;
     }
 
+    .hero-dday{
+      margin:10px 0 0;
+      font-size:14px;
+      letter-spacing:.06em;
+      color:var(--accent);
+      font-weight:500;
+    }
 
     /* 오른쪽 이름 */
     .hero-names {
@@ -286,8 +293,11 @@
       cursor:pointer;
     }
 
-    /* 우리 이야기 카드 자동 접기 */
+    /* 우리 이야기 카드 자동 접기 (펼침 상태에서는 본문 클릭해도 접히지 않음) */
     .story-card{
+      cursor:default;
+    }
+    .story-card.collapsed{
       cursor:pointer;
     }
     .story-card.collapsed .timeline,
@@ -440,6 +450,33 @@
       font-size:12px;
     }
 
+    /* 배경음악 (CONFIG.bgmSrc 가 있을 때만 표시) */
+    .bgm-btn{
+      position:fixed;
+      right:14px;
+      bottom:max(18px, env(safe-area-inset-bottom, 18px));
+      z-index:40;
+      width:46px;
+      height:46px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.94);
+      box-shadow:0 4px 18px rgba(0,0,0,.08);
+      cursor:pointer;
+      font-size:20px;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:system-ui,sans-serif;
+      color:var(--accent);
+      backdrop-filter:blur(8px);
+      transition:box-shadow .2s ease, transform .15s ease;
+    }
+    .bgm-btn:active{ transform:scale(.96); }
+    .bgm-btn.playing{
+      box-shadow:0 0 0 2px rgba(54,120,10,.28);
+    }
 
   </style>
 </head>
@@ -478,6 +515,7 @@
             <p class="hero-date">
               2026.05.09 토 오후 12:30
             </p>
+            <p class="hero-dday" id="ddayChip" aria-label="결혼식까지 남은 날">D-0</p>
           </div>
         
           <div class="hero-names">
@@ -500,7 +538,7 @@
           저희 두 사람이 사랑으로 한 길을 걷고자 합니다.<br/>
           소중한 분들과 좋은 날 함께 즐기고, <br/>
           맛있는 식사로 감사의 마음을 전하고 싶습니다.<br/>
-          축복의 자리에서 함께해 주세요.
+          축복의 자리에 함께해 주세요.
         </p>
       </div>
     </section>
@@ -647,24 +685,6 @@
       </div>
     </section>
 
-    <!-- 연락처 -->
-    <section class="section">
-      <div class="card">
-        <h2>연락처</h2>
-        <div class="desc">
-          신랑: <span id="groomPhoneText">010-4731-1902</span><br/>
-          신부: <span id="bridePhoneText">010-3461-1259</span>
-        </div>
-        <div class="divider"></div>
-        <div class="grid2">
-          <a class="btn" id="callGroom" href="tel:01047311902">신랑에게 전화</a>
-          <a class="btn" id="callBride" href="tel:01034611259">신부에게 전화</a>
-          <a class="btn" id="smsGroom" href="sms:01047311902">신랑에게 문자</a>
-          <a class="btn" id="smsBride" href="sms:01034611259">신부에게 문자</a>
-        </div>
-      </div>
-    </section>
-
     <!-- 마음 전하실 곳 -->
     <section class="section">
       <div class="card">
@@ -678,7 +698,7 @@
               신랑측
             </div>
             <button class="btn" data-copy="우리은행 388-080-33194">
-              우리은행 388-080-33194 (김종환)
+              우리은행 388-080-33194 (김종환, 강영숙)
             </button>
             <button class="btn" data-copy="우리은행 1002-384-190200">
               우리은행 1002-384-190200 (김강한)
@@ -706,11 +726,14 @@
     </section>
 
     <footer>
-      © <span id="year"></span> made by kanghan & jiyoung
+      © <span id="year"></span> made by jiyoung & cursorAI
     </footer>
   </div>
 
   <div class="toast" id="toast">복사했어요</div>
+
+  <audio id="bgm" preload="auto" playsinline loop></audio>
+  <button type="button" class="bgm-btn" id="bgmBtn" hidden aria-label="배경음악 켜기">♪</button>
 
   <script>
     // ====== 여기만 바꾸면 됩니다 ======
@@ -720,10 +743,10 @@
       weddingISO: "2026-05-09T12:30:00+09:00", // KST
       hallText: "뜰안채2한정식",
       addressText: "경기 의왕시 양지편로 39-18",
-      groomPhone: "01047311902",
-      bridePhone: "01034611259",
       // 지도: 네이버/카카오/구글 중 택1로 바꿔 쓰세요
-      mapUrl: "https://map.naver.com/v5/search/뜰안채2한정식"
+      mapUrl: "https://map.naver.com/v5/search/뜰안채2한정식",
+      // 배경음악: mp3 경로 (빈 문자열 "" 이면 우하단 ♪ 버튼 숨김). 저작권 있는 음원은 라이선스 확인 후 사용하세요.
+      bgmSrc: "./assets/bgm.mp3"
     };
 
     // ====== 유틸 ======
@@ -800,24 +823,8 @@
       setText("dateLine", f.line);
       setText("ddayChip", calcDday(CONFIG.weddingISO));
 
-      setText("groomPhoneText", formatPhone(CONFIG.groomPhone));
-      setText("bridePhoneText", formatPhone(CONFIG.bridePhone));
-
-      setHref("callGroom", `tel:${CONFIG.groomPhone}`);
-      setHref("callBride", `tel:${CONFIG.bridePhone}`);
-      setHref("smsGroom", `sms:${CONFIG.groomPhone}`);
-      setHref("smsBride", `sms:${CONFIG.bridePhone}`);
-
       setHref("mapBtn", CONFIG.mapUrl);
       setText("year", String(new Date().getFullYear()));
-    }
-
-    function formatPhone(p){
-      // 01012345678 -> 010-1234-5678
-      const s = String(p).replace(/[^0-9]/g,"");
-      if(s.length === 11) return `${s.slice(0,3)}-${s.slice(3,7)}-${s.slice(7)}`;
-      if(s.length === 10) return `${s.slice(0,3)}-${s.slice(3,6)}-${s.slice(6)}`;
-      return p;
     }
 
     // ====== 버튼 이벤트 ======
@@ -1023,10 +1030,11 @@
       }, {threshold:0});
       storyObserver.observe(storySection);
 
-      // 카드를 탭하면 다시 펼치기/접기
+      // 접힌 뒤에만 탭으로 펼치기 (펼침 상태에서 타임라인·사진 클릭 시 실수로 접히지 않게)
       storyCard.addEventListener("click", ()=>{
-        storyCollapsed = !storyCollapsed;
-        storyCard.classList.toggle("collapsed", storyCollapsed);
+        if(!storyCard.classList.contains("collapsed")) return;
+        storyCollapsed = false;
+        storyCard.classList.remove("collapsed");
       });
     }
 
@@ -1036,8 +1044,52 @@
       btn.addEventListener("click", ()=> copyText(btn.getAttribute("data-copy")));
     });
 
+    function initBgm(){
+      const src = (CONFIG.bgmSrc || "").trim();
+      const audio = $("bgm");
+      const btn = $("bgmBtn");
+      if(!src || !audio || !btn) return;
+      audio.src = src;
+      audio.autoplay = true;
+      btn.hidden = false;
+
+      const tryPlay = async ()=>{
+        try{ await audio.play(); }
+        catch(_){ /* 브라우저가 자동재생을 막은 경우 */ }
+      };
+
+      const setLabel = ()=>{
+        const on = !audio.paused;
+        btn.classList.toggle("playing", on);
+        btn.setAttribute("aria-label", on ? "배경음악 끄기" : "배경음악 켜기");
+      };
+      audio.addEventListener("play", setLabel);
+      audio.addEventListener("pause", setLabel);
+
+      // 로드 직후·재생 가능할 때 자동 재생 시도 (PC 일부 환경에서 성공)
+      tryPlay();
+      audio.addEventListener("canplay", ()=> tryPlay(), { once: true });
+
+      // 모바일 등: 화면 아무 데나 첫 터치 시 재생 시도(♪ 버튼 제외 — 버튼은 별도 처리)
+      function unlockOnGesture(e){
+        if(e.target.closest("#bgmBtn")) return;
+        document.removeEventListener("pointerdown", unlockOnGesture);
+        if(!audio.paused) return;
+        tryPlay();
+      }
+      document.addEventListener("pointerdown", unlockOnGesture, { passive: true });
+
+      btn.addEventListener("click", async ()=>{
+        try{
+          if(audio.paused) await audio.play();
+          else audio.pause();
+        }catch(_){}
+      });
+    }
+
     // init
     setContacts();
+    initBgm();
     setInterval(()=>{
       const chip = $("ddayChip");
       if (chip) chip.textContent = calcDday(CONFIG.weddingISO);
